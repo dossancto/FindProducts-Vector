@@ -1,18 +1,37 @@
-import chromadb
+from infra.databases.chroma.repositories.chroma_products_repository import ChromaProductRepository
+from domain.products.entities.product import Product
+from application.products.usecases.save_product.save_product_usecase import SaveProductUseCase
+from application.products.usecases.save_product.save_product_dtos import SaveProductInput
+from application.products.usecases.search_product.search_product_usecase import SearchProductUseCase
+from utils.load_env import load_env_variables
 
-chroma_client = chromadb.Client()
+import ui.api.flask_main
 
-collection = chroma_client.create_collection(name="my_collection")
+load_env_variables()
 
-collection.add(
-    documents=["Monster de Manga, Mongo Loco", "Monster Pacif Punch", "Cerveja sem gas"],
-    metadatas=[{"category": "energetic", "price": 12.5}, {"category": "energetic", "price": 5.0}, {"category": "alcohol"}],
-    ids=["a", "b", "c"]
-)
+save_usecase = SaveProductUseCase()
+search_usecase = SearchProductUseCase()
 
-results = collection.query(
-    query_texts=["5.0"],
-    n_results=3
-)
+inputs = [
+    SaveProductInput(
+        name="Azeite",
+        creator_name="tu"
+    ),
+    SaveProductInput(
+        name="Monster",
+        creator_name="tu"
+    )
+]
 
-print(results)
+saved_product = save_usecase.execute_many(inputs)
+
+# print(saved_product)
+
+searched_product = search_usecase.by_similiaritty("Monstro", "tu")
+
+for prod in searched_product:
+    product = prod.data
+    print(product.name, prod.distance)
+
+if __name__ == '__main__':
+    ui.api.flask_main.App.run(debug=True)
