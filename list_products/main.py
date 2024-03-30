@@ -15,23 +15,17 @@ search_usecase = SearchProductUseCase()
 inputs = [
     SaveProductInput(
         name="Azeite",
-        creator_name="tu"
+        creator_name="tu",
+        description="Azeite natural"
     ),
     SaveProductInput(
         name="Monster",
-        creator_name="tu"
+        creator_name="tu",
+        description="Energético para consumidores"
     )
 ]
 
-saved_product = save_usecase.execute_many(inputs)
-
-# print(saved_product)
-
-searched_product = search_usecase.by_similiaritty("Monstro", "tu")
-
-for prod in searched_product:
-    product = prod.data
-    print(product.name, prod.distance)
+save_usecase.execute_many(inputs)
 
 if __name__ == '__main__':
     ui.api.flask_main.App.run(debug=True)

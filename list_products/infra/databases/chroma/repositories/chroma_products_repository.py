@@ -23,7 +23,7 @@ class ChromaProductRepository:
     def save_batch(self, entities: List[Product]) -> List[str]:
         ids = list(map(lambda x: uuid.uuid4().__str__(), entities))
 
-        documents = list(map(lambda x: x.name, entities))
+        documents = list(map(lambda x: x.search_field, entities))
 
         dict_entities = list(map(lambda x: asdict(x), entities))
 
@@ -68,6 +68,8 @@ def product_from_metadata(metadata: chromadb.Metadata, id: str):
     return Product(
         id=id,
         name = metadata.get('name', ''),
-        creator_name=metadata.get('creator_name', '')
+        description= metadata.get('description', ''),
+        creator_name=metadata.get('creator_name', ''),
+        search_field=metadata.get('search_field', '')
     )
     
