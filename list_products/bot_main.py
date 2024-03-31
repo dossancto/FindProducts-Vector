@@ -90,4 +90,4 @@ async def on_message(message: discord.Message):
     await message.channel.send(response_msg)
 
 
-client.run(ENV.DISCORD_BOT_TOKEN())
+client.run(ENV.DISCORD_BOT_TOKEN() )

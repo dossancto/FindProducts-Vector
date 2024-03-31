@@ -3,8 +3,19 @@ from dataclasses import dataclass
 
 @dataclass
 class ENV:
-  def OPENAI_API_KEY():
-     return os.getenv("OPENAI_API_KEY")
 
-  def DISCORD_BOT_TOKEN():
-     return os.getenv("DISCORD_BOT_TOKEN")
+  @staticmethod
+  def OPENAI_API_KEY() -> str:
+     return __handle_env__("OPENAI_API_KEY")
+
+  @staticmethod
+  def DISCORD_BOT_TOKEN() -> str:
+     return __handle_env__("DISCORD_BOT_TOKEN")
+
+def __handle_env__(envname: str):
+ env = os.getenv(envname)
+
+ if env: return env
+
+ raise Exception(f"<{envname}> environment variable not found")
+

@@ -13,7 +13,7 @@ COLLECTION_NAME = "PRODUCT_COLLECTION"
 
 @implementer(ProductRepository)
 class ChromaProductRepository:
-    def __init__(self, chroma_client_p: chromadb.ClientAPI = chromadb.Client()) -> None:
+    def __init__(self, chroma_client_p = chromadb.Client()) -> None:
         self.chroma_client = chroma_client_p
 
         self.collection = self.chroma_client.get_or_create_collection(
@@ -24,7 +24,7 @@ class ChromaProductRepository:
         return self.save_batch([entity])[0]
 
     def save_batch(self, entities: List[Product]) -> List[str]:
-        ids = list(map(lambda x: uuid.uuid4().__str__(), entities))
+        ids = list(map(lambda _: uuid.uuid4().__str__(), entities))
 
         documents = list(map(lambda x: x.description, entities))
         openai_embedder = get_openai_embeddings()
@@ -36,7 +36,7 @@ class ChromaProductRepository:
         self.collection.add(
             embeddings=embeddings,
             documents=documents,
-            metadatas=dict_entities,
+            metadatas=dict_entities, # type: ignore
             ids=ids
         )
 
@@ -52,8 +52,8 @@ class ChromaProductRepository:
         )
 
         ids = result['ids'][0]
-        distances = result['distances'][0]
-        metadatas = result['metadatas'][0]
+        distances = result['distances'][0] # type: ignore
+        metadatas = result['metadatas'][0] # type: ignore
 
         product_count = len(ids)
         
@@ -76,9 +76,9 @@ class ChromaProductRepository:
 def product_from_metadata(metadata: chromadb.Metadata, id: str):
     return Product(
         id=id,
-        name = metadata.get('name', ''),
-        description= metadata.get('description', ''),
-        creator_name=metadata.get('creator_name', ''),
-        search_field=metadata.get('search_field', '')
+        name = metadata.get('name', '').__str__(),
+        description= metadata.get('description', '').__str__(),
+        creator_name=metadata.get('creator_name', '').__str__(),
+        search_field=metadata.get('search_field', '').__str__()
     )
     
