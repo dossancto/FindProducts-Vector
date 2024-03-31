@@ -6,6 +6,7 @@ from zope.interface import implementer
 
 from domain.products.entities.product import Product
 from application.products.data.ProductRepository import ProductRepository
+from infra.databases.chroma.utils.embeddings import get_openai_embeddings
 from domain.general.SimiliarityData import SimiliarittyData
 
 COLLECTION_NAME = "PRODUCT_COLLECTION"
@@ -15,7 +16,9 @@ class ChromaProductRepository:
     def __init__(self, chroma_client_p: chromadb.ClientAPI = chromadb.Client()) -> None:
         self.chroma_client = chroma_client_p
 
-        self.collection = self.chroma_client.get_or_create_collection(name=COLLECTION_NAME)
+        self.collection = self.chroma_client.get_or_create_collection(
+            name=COLLECTION_NAME
+            )
 
     def save(self, entity: Product) -> str:
         return self.save_batch([entity])[0]
@@ -24,10 +27,14 @@ class ChromaProductRepository:
         ids = list(map(lambda x: uuid.uuid4().__str__(), entities))
 
         documents = list(map(lambda x: x.search_field, entities))
+        openai_embedder = get_openai_embeddings()
+
+        embeddings = openai_embedder(documents)
 
         dict_entities = list(map(lambda x: asdict(x), entities))
 
         self.collection.add(
+            embeddings=embeddings,
             documents=documents,
             metadatas=dict_entities,
             ids=ids
@@ -36,9 +43,11 @@ class ChromaProductRepository:
         return ids
 
     def search_by_similiarity(self, name: List[str], creator: str) -> List[SimiliarittyData[Product]]:
+        embedder = get_openai_embeddings()
+        embeddinds = embedder(name)
         result =  self.collection.query(
-            query_texts=name,
-            n_results=2,
+            query_embeddings=embeddinds,
+            n_results=20,
             where={'creator_name': creator}
         )
 

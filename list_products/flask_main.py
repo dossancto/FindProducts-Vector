@@ -5,6 +5,10 @@ from flask import Flask, jsonify, request
 
 from application.products.usecases.search_product.search_product_usecase import SearchProductUseCase
 
+from utils.load_env import load_env_variables
+
+load_env_variables()
+
 save_usecase = SaveProductUseCase()
 
 inputs = [
@@ -12,6 +16,11 @@ inputs = [
         name="Azeite",
         creator_name="tu",
         description="Azeite natural"
+    ),
+    SaveProductInput(
+        name="Picanha",
+        creator_name="tu",
+        description="Uma carne nobre "
     ),
     SaveProductInput(
         name="Monster",
