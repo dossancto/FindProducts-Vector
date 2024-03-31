@@ -1,10 +1,9 @@
-from infra.databases.chroma.repositories.chroma_products_repository import ChromaProductRepository
-from domain.products.entities.product import Product
 from application.products.usecases.save_product.save_product_usecase import SaveProductUseCase
 from application.products.usecases.save_product.save_product_dtos import SaveProductInput
-from utils.load_env import load_env_variables
+import json
+from flask import Flask, jsonify, request
 
-load_env_variables()
+from application.products.usecases.search_product.search_product_usecase import SearchProductUseCase
 
 save_usecase = SaveProductUseCase()
 
@@ -22,3 +21,16 @@ inputs = [
 ]
 
 save_usecase.execute_many(inputs)
+
+App = Flask(__name__)
+
+@App.route('/products/<name>', methods=['GET'])
+def update_employee(name: str):
+    search_usecase = SearchProductUseCase()
+
+    products = search_usecase.by_similiaritty(name, "tu")
+
+    return jsonify(products)
+
+if __name__ == '__main__':
+    App.run(debug=True)
