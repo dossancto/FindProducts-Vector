@@ -12,6 +12,7 @@ python-dotenv = "^1.0.1"
 zope-interface = "^6.2"
 flask = "^3.0.2"
 openai = "^1.14.3"
+discord = "^2.3.2"
 
 
 [tool.poetry.group.dev.dependencies]
