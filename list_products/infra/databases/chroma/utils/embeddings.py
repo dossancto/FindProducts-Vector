@@ -5,5 +5,5 @@ def get_openai_embeddings():
   openai_api_key = ENV.OPENAI_API_KEY()
   return embedding_functions.OpenAIEmbeddingFunction(
                   api_key=openai_api_key,
-                  model_name="text-embedding-3-small"
+                  model_name="text-embedding-ada-002"
               )

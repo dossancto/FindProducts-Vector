@@ -26,7 +26,7 @@ class ChromaProductRepository:
     def save_batch(self, entities: List[Product]) -> List[str]:
         ids = list(map(lambda x: uuid.uuid4().__str__(), entities))
 
-        documents = list(map(lambda x: x.search_field, entities))
+        documents = list(map(lambda x: x.description, entities))
         openai_embedder = get_openai_embeddings()
 
         embeddings = openai_embedder(documents)
@@ -47,7 +47,7 @@ class ChromaProductRepository:
         embeddinds = embedder(name)
         result =  self.collection.query(
             query_embeddings=embeddinds,
-            n_results=20,
+            n_results=3,
             where={'creator_name': creator}
         )
 

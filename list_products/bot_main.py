@@ -20,7 +20,7 @@ inputs = [
     SaveProductInput(
         name="Picanha",
         creator_name="tu",
-        description="Uma carne nobre "
+        description="Picanha, uma carne nobre "
     ),
     SaveProductInput(
         name="Carvao",
@@ -31,6 +31,21 @@ inputs = [
         name="Notebook Aspire 5, intel i5 de nona geração",
         creator_name="tu",
         description="Ótimo para devs python"
+    ),
+      SaveProductInput(
+        name="Torta de maçã",
+        creator_name="tu",
+        description="Uma torta de maçã (sem carne)"
+    ),
+      SaveProductInput(
+        name="Salada de Frutas",
+        creator_name="tu",
+        description="Uma salada de frutas com muita diversidade"
+    ),
+      SaveProductInput(
+        name="Cachorro quente",
+        creator_name="tu",
+        description="Um cachorrro quente com bacon e farofa"
     ),
     SaveProductInput(
         name="Monster",
@@ -70,7 +85,7 @@ async def on_message(message: discord.Message):
 
     for res in result:
       product = res.data
-      response_msg += f"{product.name} - {res.distance}\n"
+      response_msg += f"{product.name} - {product.description}\n"
 
     await message.channel.send(response_msg)
 
